@@ -1,7 +1,10 @@
 package interpreter;
 
+import interpreter.view.View;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
+        interpreter.view.View view = new View();
+        view.start();
     }
 }

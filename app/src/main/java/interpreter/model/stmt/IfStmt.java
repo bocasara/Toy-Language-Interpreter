@@ -4,7 +4,7 @@ import interpreter.exceptions.MyException;
 import interpreter.model.PrgState;
 import interpreter.model.exp.IExp;
 
-public record IfStatement(IExp cond, IStmt thenS, IStmt elseS) implements IStmt {
+public record IfStmt(IExp cond, IStmt thenS, IStmt elseS) implements IStmt {
     @Override
     public PrgState execute(PrgState state) throws MyException{
         var symTable = state.getSymTable();

@@ -35,5 +35,10 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
         }
     }
 
+    @Override
+    public String toString(){
+        return dictionary.toString();
+    }
+
 
 }

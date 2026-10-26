@@ -11,6 +11,11 @@ public record BoolValue(boolean val) implements IValue  {
     }
 
     @Override
+    public boolean IsTrue() {
+        return val;
+    }
+
+    @Override
     public String toString() {
         return String.valueOf(val);
     }

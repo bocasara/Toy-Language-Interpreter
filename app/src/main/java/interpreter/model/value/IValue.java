@@ -4,4 +4,5 @@ import interpreter.model.type.IType;
 
 public interface IValue {
     IType getType();
+    boolean IsTrue();
 }

@@ -3,6 +3,7 @@ package interpreter.view;
 import java.util.Scanner;
 
 import interpreter.controller.Controller;
+import interpreter.exceptions.MyException;
 import interpreter.model.PrgState;
 import interpreter.model.adt.MyDictionary;
 import interpreter.model.adt.MyList;
@@ -49,6 +50,7 @@ public class View {
                         break;
                     case "0":
                         System.out.println("Exiting...");
+                        running = false;
                         break;
                     default:
                         System.out.println("Invalid option. Please try again.");
@@ -64,7 +66,7 @@ public class View {
     }
 
 
-    private void runProgram(IStmt program) {
+    private void runProgram(IStmt program) throws MyException {
         MyStack<IStmt> exeStack = new MyStack<>();
         MyDictionary<String, interpreter.model.value.IValue> symTable = new MyDictionary<>();
         MyList<interpreter.model.value.IValue> out = new MyList<>();

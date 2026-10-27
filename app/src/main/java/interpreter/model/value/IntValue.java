@@ -1,6 +1,5 @@
 package interpreter.model.value;
 
-import com.sun.jdi.IntegerValue;
 import interpreter.model.type.IType;
 import interpreter.model.type.IntType;
 

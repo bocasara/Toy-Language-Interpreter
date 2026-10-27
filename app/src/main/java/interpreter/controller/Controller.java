@@ -7,8 +7,6 @@ import interpreter.model.adt.IStack;
 import interpreter.model.stmt.IStmt;
 import interpreter.repository.IRepository;
 
-import java.util.prefs.PreferencesFactory;
-
 public class Controller {
     private IRepository repository;
     private boolean displayFlag;

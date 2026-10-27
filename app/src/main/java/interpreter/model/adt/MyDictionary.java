@@ -1,7 +1,6 @@
 package interpreter.model.adt;
 
 import interpreter.exceptions.ADTException;
-
 import java.util.Map;
 
 public class MyDictionary<K, V> implements IDictionary<K, V> {
@@ -17,7 +16,10 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
     }
 
     @Override
-    public V lookup(K key) {
+    public V lookup(K key) throws ADTException {
+        if (!dictionary.containsKey(key)) {
+            throw new ADTException("Key not defined: " + key);
+        }
         return dictionary.get(key);
     }
 
@@ -27,11 +29,11 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
     }
 
     @Override
-    public void update(K key, V value) {
-        if (isDefined(key)) {
+    public void update(K key, V value) throws ADTException {
+        if (dictionary.containsKey(key)) {
             dictionary.put(key, value);
         } else {
-            throw new ADTException("Key not defined: " + key);
+            throw new ADTException("Cannot update. Key not defined: " + key);
         }
     }
 
@@ -39,6 +41,4 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
     public String toString(){
         return dictionary.toString();
     }
-
-
 }

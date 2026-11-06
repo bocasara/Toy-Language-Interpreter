@@ -13,11 +13,6 @@ class BoolValueTest {
         assertEquals(new BoolType(), new BoolValue(true).getType());
     }
 
-    @Test
-    void isTrueMatchesValue() {
-        assertTrue(new BoolValue(true).IsTrue());
-        assertFalse(new BoolValue(false).IsTrue());
-    }
 
     @Test
     void toStringReturnsBooleanText() {

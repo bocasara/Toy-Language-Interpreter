@@ -14,13 +14,6 @@ class IntValueTest {
     }
 
     @Test
-    void isTrueIsFalseOnlyForZero() {
-        assertFalse(new IntValue(0).IsTrue());
-        assertTrue(new IntValue(1).IsTrue());
-        assertTrue(new IntValue(-1).IsTrue());
-    }
-
-    @Test
     void toStringReturnsNumberText() {
         assertEquals("42", new IntValue(42).toString());
         assertEquals("-7", new IntValue(-7).toString());

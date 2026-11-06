@@ -24,6 +24,7 @@ public class View {
         System.out.println("1. Run Example 1");
         System.out.println("2. Run Example 2");
         System.out.println("3. Run Example 3");
+        System.out.println("4. Run Example 4");
         System.out.println("0. Exit");
     }
 
@@ -47,6 +48,10 @@ public class View {
                     case "3":
                         System.out.println("Running Example 3...");
                         runProgram(createExample3());
+                        break;
+                    case "4":
+                        System.out.println("Running Example 4...");
+                        runProgram(createExample4());
                         break;
                     case "0":
                         System.out.println("Exiting...");
@@ -106,6 +111,12 @@ public class View {
                                         new AssignStmt("v", new ValExp(new IntValue(2))),
                                         new AssignStmt("v", new ValExp(new IntValue(3)))),
                                         new PrintStmt(new VarExp("v"))))));
+    }
+
+    private IStmt createExample4(){
+        return new CompStmt( new VarDeclStmt("a", new BoolType()),
+                new CompStmt( new AssignStmt("a", new ValExp(new IntValue(2))),
+                        new PrintStmt(new VarExp("a"))));
     }
 }
 

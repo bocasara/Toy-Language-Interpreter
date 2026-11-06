@@ -10,12 +10,6 @@ public record IntValue(int val) implements IValue {
     }
 
     @Override
-    public boolean IsTrue() {
-        return val != 0;
-    }
-
-
-    @Override
     public String toString() {
         return Integer.toString(val);
     }

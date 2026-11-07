@@ -33,14 +33,14 @@ public class Controller {
 
     public void allStep() throws MyException{
         PrgState prg = repository.getCrtPrg();
-
+        repository.logPrgStateExec();
         if(displayFlag){
             System.out.println(prg.toString());
         }
 
         while(!prg.getExeStack().isEmpty()){
             oneStep(prg);
-
+            repository.logPrgStateExec();
             if(displayFlag){
                 System.out.println(prg.toString());
             }

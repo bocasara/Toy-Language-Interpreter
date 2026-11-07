@@ -38,6 +38,19 @@ public class MyDictionary<K, V> implements IDictionary<K, V> {
     }
 
     @Override
+    public void remove(K key) throws ADTException {
+        if (!dictionary.containsKey(key)) {
+            throw new ADTException("Cannot remove. Key not defined: " + key);
+        }
+        dictionary.remove(key);
+    }
+
+    @Override
+    public Map<K, V> toMap() {
+        return new java.util.HashMap<>(dictionary);
+    }
+
+    @Override
     public String toString(){
         return dictionary.toString();
     }

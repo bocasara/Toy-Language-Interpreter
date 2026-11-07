@@ -77,7 +77,7 @@ public class View {
         MyList<interpreter.model.value.IValue> out = new MyList<>();
 
         PrgState state = new PrgState(exeStack, symTable, out, program);
-        IRepository repository = new interpreter.repository.Repository(state);
+        IRepository repository = new interpreter.repository.Repository(state, "log.txt");
         Controller controller = new Controller(repository);
 
         controller.allStep();

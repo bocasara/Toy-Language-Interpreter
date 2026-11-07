@@ -64,7 +64,8 @@ class ControllerTest {
 
     private static PrgState run(IStmt program) throws MyException {
         PrgState state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), program);
-        Controller controller = new Controller(new Repository(state));
+        Controller controller = new Controller(new Repository(state,
+                System.getProperty("java.io.tmpdir") + "/toy-interpreter-test.log"));
         controller.setDisplayFlag(false);
         controller.allStep();
         return state;
@@ -97,7 +98,8 @@ class ControllerTest {
     @Test
     void oneStepOnEmptyStackThrows() throws MyException {
         PrgState state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new NopStmt());
-        Controller controller = new Controller(new Repository(state));
+        Controller controller = new Controller(new Repository(state,
+                System.getProperty("java.io.tmpdir") + "/toy-interpreter-test.log"));
         controller.setDisplayFlag(false);
         controller.allStep();
 

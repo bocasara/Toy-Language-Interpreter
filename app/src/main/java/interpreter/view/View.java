@@ -5,9 +5,6 @@ import java.util.Scanner;
 import interpreter.controller.Controller;
 import interpreter.exceptions.MyException;
 import interpreter.model.PrgState;
-import interpreter.model.adt.MyDictionary;
-import interpreter.model.adt.MyList;
-import interpreter.model.adt.MyStack;
 import interpreter.model.exp.ArithExp;
 import interpreter.model.exp.ArithOp;
 import interpreter.model.exp.ValExp;
@@ -72,11 +69,7 @@ public class View {
 
 
     private void runProgram(IStmt program) throws MyException {
-        MyStack<IStmt> exeStack = new MyStack<>();
-        MyDictionary<String, interpreter.model.value.IValue> symTable = new MyDictionary<>();
-        MyList<interpreter.model.value.IValue> out = new MyList<>();
-
-        PrgState state = new PrgState(exeStack, symTable, out, program);
+        PrgState state = PrgState.of(program);
         IRepository repository = new interpreter.repository.Repository(state, "log.txt");
         Controller controller = new Controller(repository);
 

@@ -3,9 +3,6 @@ package interpreter.controller;
 import interpreter.exceptions.MyException;
 import interpreter.exceptions.StatementException;
 import interpreter.model.PrgState;
-import interpreter.model.adt.MyDictionary;
-import interpreter.model.adt.MyList;
-import interpreter.model.adt.MyStack;
 import interpreter.model.exp.ArithExp;
 import interpreter.model.exp.ArithOp;
 import interpreter.model.exp.ValExp;
@@ -63,7 +60,7 @@ class ControllerTest {
     }
 
     private static PrgState run(IStmt program) throws MyException {
-        PrgState state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), program);
+        PrgState state = PrgState.of(program);
         Controller controller = new Controller(new Repository(state,
                 System.getProperty("java.io.tmpdir") + "/toy-interpreter-test.log"));
         controller.setDisplayFlag(false);
@@ -97,7 +94,7 @@ class ControllerTest {
 
     @Test
     void oneStepOnEmptyStackThrows() throws MyException {
-        PrgState state = new PrgState(new MyStack<>(), new MyDictionary<>(), new MyList<>(), new NopStmt());
+        PrgState state = PrgState.of(new NopStmt());
         Controller controller = new Controller(new Repository(state,
                 System.getProperty("java.io.tmpdir") + "/toy-interpreter-test.log"));
         controller.setDisplayFlag(false);

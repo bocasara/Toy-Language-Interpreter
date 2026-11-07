@@ -4,6 +4,8 @@ import interpreter.model.adt.IDictionary;
 import interpreter.model.adt.IList;
 import interpreter.model.adt.IStack;
 import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyList;
+import interpreter.model.adt.MyStack;
 import interpreter.model.stmt.IStmt;
 import interpreter.model.value.IValue;
 import interpreter.model.value.StringValue;
@@ -28,6 +30,11 @@ public class PrgState {
 
     public PrgState(IStack<IStmt> exeStack, IDictionary<String, IValue> symTable, IList<IValue> out, IStmt originalProgram) {
         this(exeStack, symTable, out, new MyDictionary<>(), originalProgram);
+    }
+
+    public static PrgState of(IStmt program) {
+        return new PrgState(new MyStack<>(), new MyDictionary<>(),
+                new MyList<>(), new MyDictionary<>(), program);
     }
 
     public IStack<IStmt> getExeStack() {
@@ -85,7 +92,7 @@ public class PrgState {
         sb.append("Out:\n");
         out.toList().forEach(s -> sb.append(s).append("\n"));
         sb.append("FileTable:\n");
-        fileTable.toMap().keySet().forEach(f -> sb.append(f).append("\n"));
+        fileTable.toMap().keySet().forEach(f -> sb.append(f.val()).append("\n"));
         return sb.toString();
     }
 

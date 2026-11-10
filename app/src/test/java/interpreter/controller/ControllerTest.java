@@ -3,23 +3,15 @@ package interpreter.controller;
 import interpreter.exceptions.MyException;
 import interpreter.exceptions.StatementException;
 import interpreter.model.PrgState;
-import interpreter.model.exp.ArithExp;
-import interpreter.model.exp.ArithOp;
-import interpreter.model.exp.ValExp;
-import interpreter.model.exp.VarExp;
-import interpreter.model.stmt.AssignStmt;
-import interpreter.model.stmt.CompStmt;
-import interpreter.model.stmt.IStmt;
-import interpreter.model.stmt.IfStmt;
 import interpreter.model.stmt.NopStmt;
-import interpreter.model.stmt.PrintStmt;
-import interpreter.model.stmt.VarDeclStmt;
-import interpreter.model.type.BoolType;
-import interpreter.model.type.IntType;
-import interpreter.model.value.BoolValue;
 import interpreter.model.value.IntValue;
 import interpreter.repository.Repository;
+import interpreter.view.Examples;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,50 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ControllerTest {
 
-    // Ex1: int v; v = 2; print(v)
-    private static IStmt example1() {
-        return new CompStmt(new VarDeclStmt("v", new IntType()),
-                new CompStmt(new AssignStmt("v", new ValExp(new IntValue(2))),
-                        new PrintStmt(new VarExp("v"))));
-    }
+    @TempDir
+    Path dir;
 
-    // Ex2: int a; int b; a = 2 + 3 * 5; b = a + 1; print(b)
-    private static IStmt example2() {
-        return new CompStmt(new VarDeclStmt("a", new IntType()),
-                new CompStmt(new VarDeclStmt("b", new IntType()),
-                        new CompStmt(new AssignStmt("a",
-                                new ArithExp(ArithOp.ADD, new ValExp(new IntValue(2)),
-                                        new ArithExp(ArithOp.MUL, new ValExp(new IntValue(3)),
-                                                new ValExp(new IntValue(5))))),
-                                new CompStmt(new AssignStmt("b",
-                                        new ArithExp(ArithOp.ADD, new VarExp("a"),
-                                                new ValExp(new IntValue(1)))),
-                                        new PrintStmt(new VarExp("b"))))));
-    }
-
-    // Ex3: bool a; int v; a = true; (if a then v = 2 else v = 3); print(v)
-    private static IStmt example3() {
-        return new CompStmt(new VarDeclStmt("a", new BoolType()),
-                new CompStmt(new VarDeclStmt("v", new IntType()),
-                        new CompStmt(new AssignStmt("a", new ValExp(new BoolValue(true))),
-                                new CompStmt(new IfStmt(new VarExp("a"),
-                                        new AssignStmt("v", new ValExp(new IntValue(2))),
-                                        new AssignStmt("v", new ValExp(new IntValue(3)))),
-                                        new PrintStmt(new VarExp("v"))))));
-    }
-
-    private static PrgState run(IStmt program) throws MyException {
+    private PrgState run(interpreter.model.stmt.IStmt program) throws MyException {
         PrgState state = PrgState.of(program);
-        Controller controller = new Controller(new Repository(state,
-                System.getProperty("java.io.tmpdir") + "/toy-interpreter-test.log"));
-        controller.setDisplayFlag(false);
+        Controller controller = new Controller(
+                new Repository(state, dir.resolve("log.txt").toString()), false);
         controller.allStep();
         return state;
     }
 
     @Test
     void example1PrintsTwo() throws MyException {
-        PrgState state = run(example1());
+        PrgState state = run(Examples.EX1);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
         assertEquals(new IntValue(2), state.getOut().get(0));
@@ -78,7 +40,7 @@ class ControllerTest {
 
     @Test
     void example2PrintsEighteen() throws MyException {
-        PrgState state = run(example2());
+        PrgState state = run(Examples.EX2);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
         assertEquals(new IntValue(18), state.getOut().get(0));
@@ -86,7 +48,7 @@ class ControllerTest {
 
     @Test
     void example3PrintsTwo() throws MyException {
-        PrgState state = run(example3());
+        PrgState state = run(Examples.EX3);
         assertTrue(state.getExeStack().isEmpty());
         assertEquals(1, state.getOut().size());
         assertEquals(new IntValue(2), state.getOut().get(0));
@@ -95,12 +57,45 @@ class ControllerTest {
     @Test
     void oneStepOnEmptyStackThrows() throws MyException {
         PrgState state = PrgState.of(new NopStmt());
-        Controller controller = new Controller(new Repository(state,
-                System.getProperty("java.io.tmpdir") + "/toy-interpreter-test.log"));
-        controller.setDisplayFlag(false);
+        Controller controller = new Controller(
+                new Repository(state, dir.resolve("log.txt").toString()), false);
         controller.allStep();
 
         assertTrue(state.getExeStack().isEmpty());
         assertThrows(StatementException.class, () -> controller.oneStep(state));
+    }
+
+    @Test
+    void fileExampleReadsBothNumbersAndClosesTheFile() throws Exception {
+        Path in = dir.resolve("test.in");
+        Files.writeString(in, "15\n50\n");
+        PrgState s = run(Examples.fileExample(in.toString()));
+        assertEquals(new IntValue(15), s.getOut().get(0));
+        assertEquals(new IntValue(50), s.getOut().get(1));
+        assertTrue(s.getFileTable().toMap().isEmpty());
+    }
+
+    @Test
+    void emptyFileReadsZeroTwice() throws Exception {
+        Path in = dir.resolve("empty.in");
+        Files.writeString(in, "");
+        PrgState s = run(Examples.fileExample(in.toString()));
+        assertEquals(new IntValue(0), s.getOut().get(0));
+        assertEquals(new IntValue(0), s.getOut().get(1));
+    }
+
+    @Test
+    void example5PrintsFive() throws MyException {
+        PrgState s = run(Examples.EX5);
+        assertEquals(new IntValue(5), s.getOut().get(0));
+    }
+
+    @Test
+    void logFileContainsTheFourSectionsInOrder() throws Exception {
+        run(Examples.EX1);
+        String log = Files.readString(dir.resolve("log.txt"));
+        int a = log.indexOf("ExeStack:"), b = log.indexOf("SymTable:"),
+                c = log.indexOf("Out:"), d = log.indexOf("FileTable:");
+        assertTrue(0 <= a && a < b && b < c && c < d);
     }
 }

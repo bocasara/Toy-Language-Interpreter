@@ -16,6 +16,11 @@ public class Controller {
         this.displayFlag = true;
     }
 
+    public Controller(IRepository repository, boolean displayFlag) {
+        this.repository = repository;
+        this.displayFlag = displayFlag;
+    }
+
     public void setDisplayFlag(boolean displayFlag) {
         this.displayFlag = displayFlag;
     }

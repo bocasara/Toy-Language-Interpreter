@@ -15,7 +15,7 @@ public class Repository implements IRepository{
     private final List<PrgState> prgStates;
     private final String logFilePath;
 
-    public Repository(PrgState initialPrgState, String logFilePath) throws MyException {
+    public Repository(PrgState initialPrgState, String logFilePath) {
         this.prgStates = new ArrayList<>();
         this.prgStates.add(initialPrgState);
         this.logFilePath = logFilePath;

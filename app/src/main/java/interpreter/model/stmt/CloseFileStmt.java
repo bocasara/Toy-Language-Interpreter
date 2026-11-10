@@ -28,4 +28,9 @@ public record CloseFileStmt(IExp exp) implements IStmt {
         fileTable.remove(fileName);
         return state;
     }
+
+    @Override
+    public String toString() {
+        return "closeRFile(" + exp + ")";
+    }
 }

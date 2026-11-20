@@ -16,9 +16,9 @@ import java.nio.file.Path;
 
 class FileStmtTest {
     @TempDir
-    Path dir; // a new empty folder for every test
+    Path dir;
     private PrgState state;
-    private ValExp file; // the expression "<dir>/numbers.in"
+    private ValExp file;
 
     @BeforeEach
     void setUp() throws Exception {

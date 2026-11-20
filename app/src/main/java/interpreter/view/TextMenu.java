@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class TextMenu {
-    private final Map<String, Command> commands = new LinkedHashMap<>(); // in insertion order
+    private final Map<String, Command> commands = new LinkedHashMap<>();
 
     public void addCommand(Command c) {
         commands.put(c.getKey(), c);

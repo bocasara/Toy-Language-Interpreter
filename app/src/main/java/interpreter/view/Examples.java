@@ -22,60 +22,69 @@ import interpreter.model.value.BoolValue;
 import interpreter.model.value.IntValue;
 import interpreter.model.value.StringValue;
 
-/** The hard-coded example programs, written directly as object trees. */
 public final class Examples {
 
-    private Examples() {
-    }
+    private Examples() {}
 
-    // Ex1: int v; v = 2; print(v)
-    public static final IStmt EX1 = new CompStmt(new VarDeclStmt("v", new IntType()),
-            new CompStmt(new AssignStmt("v", new ValExp(new IntValue(2))),
-                    new PrintStmt(new VarExp("v"))));
+        // Ex1: int v; v = 2; print(v)
+        public static final IStmt EX1 = new CompStmt(new VarDeclStmt("v", new IntType()),
+                new CompStmt(new AssignStmt("v", new ValExp(new IntValue(2))),
+                        new PrintStmt(new VarExp("v"))));
 
-    // Ex2: int a; int b; a = 2 + 3 * 5; b = a + 1; print(b)
-    public static final IStmt EX2 = new CompStmt(new VarDeclStmt("a", new IntType()),
-            new CompStmt(new VarDeclStmt("b", new IntType()),
-                    new CompStmt(new AssignStmt("a",
-                            new ArithExp(ArithOp.ADD, new ValExp(new IntValue(2)),
-                                    new ArithExp(ArithOp.MUL, new ValExp(new IntValue(3)),
-                                            new ValExp(new IntValue(5))))),
-                            new CompStmt(new AssignStmt("b",
-                                    new ArithExp(ArithOp.ADD, new VarExp("a"),
-                                            new ValExp(new IntValue(1)))),
-                                    new PrintStmt(new VarExp("b"))))));
+        // Ex2: int a; int b; a = 2 + 3 * 5; b = a + 1; print(b)
+        public static final IStmt EX2 = new CompStmt(new VarDeclStmt("a", new IntType()),
+                new CompStmt(new VarDeclStmt("b", new IntType()),
+                        new CompStmt(new AssignStmt("a",
+                                new ArithExp(ArithOp.ADD, new ValExp(new IntValue(2)),
+                                        new ArithExp(ArithOp.MUL, new ValExp(new IntValue(3)),
+                                                new ValExp(new IntValue(5))))),
+                                new CompStmt(new AssignStmt("b",
+                                        new ArithExp(ArithOp.ADD, new VarExp("a"),
+                                                new ValExp(new IntValue(1)))),
+                                        new PrintStmt(new VarExp("b"))))));
 
-    // Ex3: bool a; int v; a = true; (if a then v = 2 else v = 3); print(v)
-    public static final IStmt EX3 = new CompStmt(new VarDeclStmt("a", new BoolType()),
-            new CompStmt(new VarDeclStmt("v", new IntType()),
-                    new CompStmt(new AssignStmt("a", new ValExp(new BoolValue(true))),
-                            new CompStmt(new IfStmt(new VarExp("a"),
-                                    new AssignStmt("v", new ValExp(new IntValue(2))),
-                                    new AssignStmt("v", new ValExp(new IntValue(3)))),
-                                    new PrintStmt(new VarExp("v"))))));
+        // Ex3: bool a; int v; a = true; (if a then v = 2 else v = 3); print(v)
+        public static final IStmt EX3 = new CompStmt(new VarDeclStmt("a", new BoolType()),
+                new CompStmt(new VarDeclStmt("v", new IntType()),
+                        new CompStmt(new AssignStmt("a", new ValExp(new BoolValue(true))),
+                                new CompStmt(new IfStmt(new VarExp("a"),
+                                        new AssignStmt("v", new ValExp(new IntValue(2))),
+                                        new AssignStmt("v", new ValExp(new IntValue(3)))),
+                                        new PrintStmt(new VarExp("v"))))));
 
-    // Ex4: string varf; varf = "<fileName>"; openRFile(varf); int varc;
-    //      readFile(varf, varc); print(varc); readFile(varf, varc); print(varc); closeRFile(varf)
-    public static IStmt fileExample(String fileName) {
-        return new CompStmt(new VarDeclStmt("varf", new StringType()),
-                new CompStmt(new AssignStmt("varf", new ValExp(new StringValue(fileName))),
-                        new CompStmt(new OpenRFileStmt(new VarExp("varf")),
-                                new CompStmt(new VarDeclStmt("varc", new IntType()),
-                                        new CompStmt(new ReadFileStmt(new VarExp("varf"), "varc"),
-                                                new CompStmt(new PrintStmt(new VarExp("varc")),
-                                                        new CompStmt(new ReadFileStmt(new VarExp("varf"), "varc"),
-                                                                new CompStmt(new PrintStmt(new VarExp("varc")),
-                                                                        new CloseFileStmt(new VarExp("varf"))))))))));
-    }
+        // Ex4: string varf; varf = "<fileName>"; openRFile(varf); int varc;
+        //      readFile(varf, varc); print(varc); readFile(varf, varc); print(varc); closeRFile(varf)
+        public static IStmt fileExample (String fileName){
+            return new CompStmt(new VarDeclStmt("varf", new StringType()),
+                    new CompStmt(new AssignStmt("varf", new ValExp(new StringValue(fileName))),
+                            new CompStmt(new OpenRFileStmt(new VarExp("varf")),
+                                    new CompStmt(new VarDeclStmt("varc", new IntType()),
+                                            new CompStmt(new ReadFileStmt(new VarExp("varf"), "varc"),
+                                                    new CompStmt(new PrintStmt(new VarExp("varc")),
+                                                            new CompStmt(new ReadFileStmt(new VarExp("varf"), "varc"),
+                                                                    new CompStmt(new PrintStmt(new VarExp("varc")),
+                                                                            new CloseFileStmt(new VarExp("varf"))))))))));
+        }
 
-    public static final IStmt EX4 = fileExample("test.in");
+        public static final IStmt EX4 = fileExample("test.in");
 
-    // Ex5: int a; int b; a = 5; b = 7; (if a < b then print(a) else print(b))
-    public static final IStmt EX5 = new CompStmt(new VarDeclStmt("a", new IntType()),
-            new CompStmt(new VarDeclStmt("b", new IntType()),
-                    new CompStmt(new AssignStmt("a", new ValExp(new IntValue(5))),
-                            new CompStmt(new AssignStmt("b", new ValExp(new IntValue(7))),
-                                    new IfStmt(new RelationalExp(RelOp.LT, new VarExp("a"), new VarExp("b")),
-                                            new PrintStmt(new VarExp("a")),
-                                            new PrintStmt(new VarExp("b")))))));
-}
+        // Ex5: int a; int b; a = 5; b = 7; (if a < b then print(a) else print(b))
+        public static final IStmt EX5 = new CompStmt(new VarDeclStmt("a", new IntType()),
+                new CompStmt(new VarDeclStmt("b", new IntType()),
+                        new CompStmt(new AssignStmt("a", new ValExp(new IntValue(5))),
+                                new CompStmt(new AssignStmt("b", new ValExp(new IntValue(7))),
+                                        new IfStmt(new RelationalExp(RelOp.LT, new VarExp("a"), new VarExp("b")),
+                                                new PrintStmt(new VarExp("a")),
+                                                new PrintStmt(new VarExp("b")))))));
+
+        //Ex6: int a; int b; bool c; a = 1; b = 2; c = a != b; print(c)
+        public static final IStmt EX6 = new CompStmt(new VarDeclStmt("a", new IntType()),
+                new CompStmt(new VarDeclStmt("b", new IntType()),
+                        new CompStmt(new VarDeclStmt("c", new BoolType()),
+                                new CompStmt(new AssignStmt("a", new ValExp(new IntValue(1))),
+                                        new CompStmt(new AssignStmt("b", new ValExp(new IntValue(2))),
+                                                new CompStmt(new AssignStmt("c",
+                                                        new RelationalExp(RelOp.NE, new VarExp("a"), new VarExp("b"))),
+                                                        new PrintStmt(new VarExp("c"))))))));
+
+    };

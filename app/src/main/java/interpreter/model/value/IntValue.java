@@ -1,7 +1,7 @@
 package interpreter.model.value;
 
-import interpreter.model.type.IType;
 import interpreter.model.type.IntType;
+import interpreter.model.type.IType;
 
 public record IntValue(int val) implements IValue {
     @Override

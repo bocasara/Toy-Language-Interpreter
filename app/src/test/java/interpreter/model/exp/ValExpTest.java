@@ -2,7 +2,9 @@ package interpreter.model.exp;
 
 import interpreter.exceptions.MyException;
 import interpreter.model.adt.IDictionary;
+import interpreter.model.adt.IHeap;
 import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyHeap;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,22 +14,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ValExpTest {
     private IDictionary<String, IValue> symTable;
+    private IHeap heap;
 
     @BeforeEach
     void setUp() {
         symTable = new MyDictionary<>();
+        heap = new MyHeap();
     }
 
     @Test
     void evalIntValue() throws MyException {
         ValExp valExp = new ValExp(new IntValue(42));
-        assertEquals(new IntValue(42), valExp.eval(symTable));
+        assertEquals(new IntValue(42), valExp.eval(symTable, heap));
     }
 
     @Test
     void evalBoolValue() throws MyException {
         ValExp valExp = new ValExp(new interpreter.model.value.BoolValue(true));
-        assertEquals(new interpreter.model.value.BoolValue(true), valExp.eval(symTable));
+        assertEquals(new interpreter.model.value.BoolValue(true), valExp.eval(symTable, heap));
     }
 
     @Test

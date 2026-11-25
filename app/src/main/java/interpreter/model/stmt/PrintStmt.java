@@ -10,7 +10,7 @@ public record PrintStmt(IExp exp) implements IStmt {
     public PrgState execute(PrgState state) throws MyException {
         var symTable = state.getSymTable();
         var out = state.getOut();
-        out.add(exp.eval(symTable));
+        out.add(exp.eval(symTable, state.getHeap()));
         return state;
     }
 

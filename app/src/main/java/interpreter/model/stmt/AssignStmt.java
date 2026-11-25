@@ -13,7 +13,7 @@ public record AssignStmt(String id, IExp exp) implements IStmt {
         if(!symTable.isDefined(id)) {
             throw new StatementException("Variable " + id + " is not defined.");
         }
-        IValue value = exp.eval(symTable);
+        IValue value = exp.eval(symTable, state.getHeap());
         if(!value.getType().equals(symTable.lookup(id).getType())) {
             throw new StatementException("Type of expression does not match type of variable " + id + ".");
         }

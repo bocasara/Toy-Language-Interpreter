@@ -20,8 +20,8 @@ public record ReadFileStmt(IExp exp, String varName) implements IStmt {
             throw new StatementException("readfile: variable " + varName + " is not declared");
         if(!(symTable.lookup(varName).getType() instanceof IntType))
             throw new StatementException("readfile: variable " + varName + " is not an integer");
-        if(!(exp.eval(symTable) instanceof StringValue fileName))
-            throw new StatementException("readfile: expression " + exp.eval(symTable) + " is not a string");
+        if(!(exp.eval(symTable, state.getHeap()) instanceof StringValue fileName))
+            throw new StatementException("readfile: expression " + exp.eval(symTable, state.getHeap()) + " is not a string");
 
         var fileTable = state.getFileTable();
         if(!fileTable.isDefined(fileName))

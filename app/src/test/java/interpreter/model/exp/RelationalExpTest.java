@@ -3,7 +3,9 @@ package interpreter.model.exp;
 import interpreter.exceptions.ExpressionException;
 import interpreter.exceptions.MyException;
 import interpreter.model.adt.IDictionary;
+import interpreter.model.adt.IHeap;
 import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyHeap;
 import interpreter.model.value.BoolValue;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
@@ -15,11 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RelationalExpTest {
     private IDictionary<String, IValue> symtable;
+    private IHeap heap;
 
 
     @BeforeEach
     void setUp() {
         symtable = new MyDictionary<>();
+        heap = new MyHeap();
     }
 
     private static IExp num(int n){
@@ -32,44 +36,44 @@ class RelationalExpTest {
 
     @Test
     void twoEqualNumbers() throws MyException {
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.EQ, num(2), num(2)).eval(symtable));
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.EQ, num(2), num(3)).eval(symtable));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.EQ, num(2), num(2)).eval(symtable, heap));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.EQ, num(2), num(3)).eval(symtable, heap));
     }
 
     @Test
     void twoNotEqualNumbers() throws MyException {
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.NE, num(2), num(2)).eval(symtable));
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.NE, num(2), num(3)).eval(symtable));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.NE, num(2), num(2)).eval(symtable, heap));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.NE, num(2), num(3)).eval(symtable, heap));
     }
 
     @Test
     void greaterThan() throws MyException {
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.GT, num(4), num(3)).eval(symtable));
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.GT, num(3), num(4)).eval(symtable));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.GT, num(4), num(3)).eval(symtable, heap));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.GT, num(3), num(4)).eval(symtable, heap));
     }
     @Test
     void greaterOrEqual() throws MyException {
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.GT, num(4), num(3)).eval(symtable));
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.GT, num(3), num(4)).eval(symtable));
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.GT, num(3), num(3)).eval(symtable));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.GT, num(4), num(3)).eval(symtable, heap));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.GT, num(3), num(4)).eval(symtable, heap));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.GT, num(3), num(3)).eval(symtable, heap));
     }
 
     @Test
     void lessThan() throws MyException {
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.LT, num(4), num(3)).eval(symtable));
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.LT, num(3), num(4)).eval(symtable));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.LT, num(4), num(3)).eval(symtable, heap));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.LT, num(3), num(4)).eval(symtable, heap));
     }
     @Test
     void lessOrEqual() throws MyException {
-        assertEquals(new BoolValue(false), new RelationalExp(RelOp.LE, num(4), num(3)).eval(symtable));
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.LE, num(3), num(4)).eval(symtable));
-        assertEquals(new BoolValue(true), new RelationalExp(RelOp.LE, num(3), num(3)).eval(symtable));
+        assertEquals(new BoolValue(false), new RelationalExp(RelOp.LE, num(4), num(3)).eval(symtable, heap));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.LE, num(3), num(4)).eval(symtable, heap));
+        assertEquals(new BoolValue(true), new RelationalExp(RelOp.LE, num(3), num(3)).eval(symtable, heap));
     }
 
     @Test
     void throwsWhenRightOperandNotInt() throws MyException {
         ExpressionException e =  assertThrows(ExpressionException.class, () -> {
-            new RelationalExp(RelOp.EQ, bool(true), num(3)).eval(symtable);
+            new RelationalExp(RelOp.EQ, bool(true), num(3)).eval(symtable, heap);
         });
 
         assertEquals("First operand is not an integer.", e.getMessage());
@@ -78,7 +82,7 @@ class RelationalExpTest {
     @Test
     void throwsWhenLeftOperandNotInt() throws MyException {
         ExpressionException e =  assertThrows(ExpressionException.class, () -> {
-            new RelationalExp(RelOp.EQ, num(4), bool(true)).eval(symtable);
+            new RelationalExp(RelOp.EQ, num(4), bool(true)).eval(symtable, heap);
         });
 
         assertEquals("Second operand is not an integer.", e.getMessage());

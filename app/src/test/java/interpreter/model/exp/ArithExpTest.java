@@ -3,7 +3,9 @@ package interpreter.model.exp;
 import interpreter.exceptions.ExpressionException;
 import interpreter.exceptions.MyException;
 import interpreter.model.adt.IDictionary;
+import interpreter.model.adt.IHeap;
 import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyHeap;
 import interpreter.model.value.BoolValue;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
@@ -17,10 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ArithExpTest {
     private IDictionary<String, IValue> symTable;
+    private IHeap heap;
 
     @BeforeEach
     void setUp(){
         symTable = new MyDictionary<>();
+        heap = new MyHeap();
     }
 
     private static IExp num(int n){
@@ -33,28 +37,28 @@ public class ArithExpTest {
 
     @Test
     void addsTowNumbers() throws MyException{
-        assertEquals(new IntValue(5), new ArithExp(ArithOp.ADD, num(2), num(3)).eval(symTable));
+        assertEquals(new IntValue(5), new ArithExp(ArithOp.ADD, num(2), num(3)).eval(symTable, heap));
     }
 
     @Test
     void subtractsTwoNumbers() throws MyException{
-        assertEquals(new IntValue(1), new ArithExp(ArithOp.SUB, num(3), num(2)).eval(symTable));
+        assertEquals(new IntValue(1), new ArithExp(ArithOp.SUB, num(3), num(2)).eval(symTable, heap));
     }
 
     @Test
     void multipliesTwoNumbers() throws MyException{
-        assertEquals(new IntValue(6), new ArithExp(ArithOp.MUL, num(2), num(3)).eval(symTable));
+        assertEquals(new IntValue(6), new ArithExp(ArithOp.MUL, num(2), num(3)).eval(symTable, heap));
     }
 
     @Test
     void dividesTwoNumbers() throws MyException{
-        assertEquals(new IntValue(2), new ArithExp(ArithOp.DIV, num(6), num(3)).eval(symTable));
+        assertEquals(new IntValue(2), new ArithExp(ArithOp.DIV, num(6), num(3)).eval(symTable, heap));
     }
 
     @Test
     void throwsWhenDividingByZero() {
         ExpressionException e = assertThrows(ExpressionException.class, () -> {
-            new ArithExp(ArithOp.DIV, num(6), num(0)).eval(symTable);
+            new ArithExp(ArithOp.DIV, num(6), num(0)).eval(symTable, heap);
         });
         assertEquals("Division by zero", e.getMessage());
     }
@@ -62,13 +66,13 @@ public class ArithExpTest {
     @Test
     void respectsOperatorPrecedence() throws MyException{
         IExp exp = new ArithExp(ArithOp.ADD, num(2), new ArithExp(ArithOp.MUL, num(3), num(4)));
-        assertEquals(new IntValue(14), exp.eval(symTable));
+        assertEquals(new IntValue(14), exp.eval(symTable, heap));
     }
 
     @Test
     void  booleansAreNotAllowed() {
         ExpressionException e = assertThrows(ExpressionException.class, () -> {
-            new ArithExp(ArithOp.ADD, bool(true), num(3)).eval(symTable);
+            new ArithExp(ArithOp.ADD, bool(true), num(3)).eval(symTable, heap);
         });
         assertEquals("Left operand is not an integer", e.getMessage());
     }
@@ -76,7 +80,7 @@ public class ArithExpTest {
     @Test
     void booleansAreNotAllowed2() {
         ExpressionException e = assertThrows(ExpressionException.class, () -> {
-            new ArithExp(ArithOp.ADD, num(3), bool(false)).eval(symTable);
+            new ArithExp(ArithOp.ADD, num(3), bool(false)).eval(symTable, heap);
         });
         assertEquals("Right operand is not an integer", e.getMessage());
     }
@@ -86,14 +90,14 @@ public class ArithExpTest {
         symTable.put("x", new IntValue(5));
         symTable.put("y", new IntValue(3));
         IExp exp = new ArithExp(ArithOp.ADD, new VarExp("x"), new VarExp("y"));
-        assertEquals(new IntValue(8), exp.eval(symTable));
+        assertEquals(new IntValue(8), exp.eval(symTable, heap));
     }
 
     @Test
     void evaluationDoesNotChangeSymbolTable() throws MyException{
         symTable.put("x", new IntValue(5));
         IExp exp = new ArithExp(ArithOp.ADD, new VarExp("x"), num(3));
-        exp.eval(symTable);
+        exp.eval(symTable, heap);
         assertEquals(new IntValue(5), symTable.lookup("x"));
     }
 

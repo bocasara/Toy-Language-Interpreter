@@ -3,7 +3,9 @@ package interpreter.model.exp;
 import interpreter.exceptions.ExpressionException;
 import interpreter.exceptions.MyException;
 import interpreter.model.adt.IDictionary;
+import interpreter.model.adt.IHeap;
 import interpreter.model.adt.MyDictionary;
+import interpreter.model.adt.MyHeap;
 import interpreter.model.value.BoolValue;
 import interpreter.model.value.IValue;
 import interpreter.model.value.IntValue;
@@ -15,10 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LogicExpTest {
     private IDictionary<String, IValue> symTable;
+    private IHeap heap;
 
     @BeforeEach
     void setUp(){
         symTable = new MyDictionary<>();
+        heap = new MyHeap();
     }
 
     private static IExp num(int n){
@@ -31,27 +35,27 @@ public class LogicExpTest {
 
     @Test
     void comparesTwoBooleans() throws MyException{
-        assertEquals(new BoolValue(true), new LogicExp(LogicOp.AND, bool(true), bool(true)).eval(symTable));
-        assertEquals(new BoolValue(false), new LogicExp(LogicOp.AND, bool(true), bool(false)).eval(symTable));
-        assertEquals(new BoolValue(false), new LogicExp(LogicOp.OR, bool(false), bool(false)).eval(symTable));
-        assertEquals(new BoolValue(true), new LogicExp(LogicOp.OR, bool(true), bool(false)).eval(symTable));
+        assertEquals(new BoolValue(true), new LogicExp(LogicOp.AND, bool(true), bool(true)).eval(symTable, heap));
+        assertEquals(new BoolValue(false), new LogicExp(LogicOp.AND, bool(true), bool(false)).eval(symTable, heap));
+        assertEquals(new BoolValue(false), new LogicExp(LogicOp.OR, bool(false), bool(false)).eval(symTable, heap));
+        assertEquals(new BoolValue(true), new LogicExp(LogicOp.OR, bool(true), bool(false)).eval(symTable, heap));
     }
 
     @Test
     void comparesTwoBooleansWithNot() throws MyException{
-        assertEquals(new BoolValue(false), new LogicExp(LogicOp.NOT, bool(true), null).eval(symTable));
-        assertEquals(new BoolValue(true), new LogicExp(LogicOp.NOT, bool(false), null).eval(symTable));
+        assertEquals(new BoolValue(false), new LogicExp(LogicOp.NOT, bool(true), null).eval(symTable, heap));
+        assertEquals(new BoolValue(true), new LogicExp(LogicOp.NOT, bool(false), null).eval(symTable, heap));
     }
 
     @Test
     void respectsOperatorPrecedence() throws MyException {
-        assertEquals(new BoolValue(true), new LogicExp(LogicOp.OR, new LogicExp(LogicOp.AND, bool(true), bool(false)), bool(true)).eval(symTable));
+        assertEquals(new BoolValue(true), new LogicExp(LogicOp.OR, new LogicExp(LogicOp.AND, bool(true), bool(false)), bool(true)).eval(symTable, heap));
     }
 
     @Test
     void throwsWhenLeftOperandIsNotBoolean() {
         ExpressionException e = assertThrows(ExpressionException.class, () -> {
-            new LogicExp(LogicOp.AND, num(1), bool(true)).eval(symTable);
+            new LogicExp(LogicOp.AND, num(1), bool(true)).eval(symTable, heap);
         });
         assertEquals("Left operand is not a boolean", e.getMessage());
     }
@@ -59,7 +63,7 @@ public class LogicExpTest {
     @Test
     void throwsWhenRightOperandIsNotBoolean() {
         ExpressionException e = assertThrows(ExpressionException.class, () -> {
-            new LogicExp(LogicOp.AND, bool(true), num(1)).eval(symTable);
+            new LogicExp(LogicOp.AND, bool(true), num(1)).eval(symTable, heap);
         });
         assertEquals("Right operand is not a boolean", e.getMessage());
     }

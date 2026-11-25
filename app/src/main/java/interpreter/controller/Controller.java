@@ -6,6 +6,10 @@ import interpreter.model.PrgState;
 import interpreter.model.adt.IStack;
 import interpreter.model.stmt.IStmt;
 import interpreter.repository.IRepository;
+import interpreter.controller.GarbageCollector;
+
+import static interpreter.controller.GarbageCollector.getAddrFromSymTable;
+import static interpreter.controller.GarbageCollector.safeGarbageCollector;
 
 public class Controller {
     private IRepository repository;
@@ -45,6 +49,8 @@ public class Controller {
 
         while(!prg.getExeStack().isEmpty()){
             oneStep(prg);
+            repository.logPrgStateExec();
+            prg.getHeap().setContent(safeGarbageCollector(getAddrFromSymTable(prg.getSymTable().toMap().values()), prg.getHeap().getContent()));
             repository.logPrgStateExec();
             if(displayFlag){
                 System.out.println(prg.toString());
